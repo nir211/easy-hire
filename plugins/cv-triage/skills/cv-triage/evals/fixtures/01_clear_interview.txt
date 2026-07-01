@@ -1,0 +1,13 @@
+Office Manager candidate — readable CV (synthetic, fictional)
+
+Name: Noa Berkovich
+Email: noa.fictional@example.com  | Phone: 050-000-0001
+Languages: Hebrew (native), English (full professional)
+
+Experience:
+- Office Manager, Helios Labs (a high-tech startup), 2021–2026 (5 yrs):
+  ran a 40-person office, vendor and lease management, travel, onboarding,
+  bookkeeping handoff to external accountant, owned Priority and Google Workspace.
+- Administrative Coordinator, Maya Health, 2018–2021 (3 yrs).
+
+Tools: Google Workspace, Priority ERP, Monday.com.

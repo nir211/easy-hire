@@ -1,0 +1,16 @@
+{
+  "name": "easy-hire",
+  "owner": { "name": "nir211" },
+  "description": "Recruiting CV-triage skill for Claude.",
+  "plugins": [
+    {
+      "name": "cv-triage",
+      "source": "./plugins/cv-triage",
+      "description": "Triage job-application CVs from Gmail into Interview / Hold / Reject, tracked in a local Excel file.",
+      "version": "1.0.0",
+      "license": "MIT",
+      "category": "productivity",
+      "keywords": ["recruiting", "cv", "resume", "screening", "gmail", "hiring", "ats"]
+    }
+  ]
+}

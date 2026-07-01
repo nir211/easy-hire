@@ -1,0 +1,27 @@
+{
+  "skill_name": "cv-triage",
+  "note": "Synthetic readable CVs to test decision calibration (not retrieval). Run each in Cowork with the skill installed, using job-description.txt as the JD and the must/nice/deal-breaker lines as criteria.",
+  "evals": [
+    {
+      "id": 1,
+      "name": "clear-interview",
+      "prompt": "Using fixtures/job-description.txt as the role, evaluate fixtures/01_clear_interview.txt and give a decision with a one-line reason.",
+      "expected_output": "Interview. All must-haves clearly met: 5+ yrs office management, Hebrew+English, high-tech office ownership, ERP tools.",
+      "files": ["fixtures/job-description.txt", "fixtures/01_clear_interview.txt"]
+    },
+    {
+      "id": 2,
+      "name": "clear-reject-offrole",
+      "prompt": "Using fixtures/job-description.txt as the role, evaluate fixtures/02_clear_reject_offrole.txt and give a decision with a one-line reason.",
+      "expected_output": "Reject. Off-role: applied as a game developer with no admin/office-management experience.",
+      "files": ["fixtures/job-description.txt", "fixtures/02_clear_reject_offrole.txt"]
+    },
+    {
+      "id": 3,
+      "name": "genuine-borderline",
+      "prompt": "Using fixtures/job-description.txt as the role, evaluate fixtures/03_borderline_hold.txt and give a decision with a one-line reason.",
+      "expected_output": "Hold. ~1.5 yrs (below the 2-yr floor), basic English, no high-tech/ERP — genuine borderline, should not be auto-rejected or auto-interviewed.",
+      "files": ["fixtures/job-description.txt", "fixtures/03_borderline_hold.txt"]
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+Application to the same inbox — wrong role (synthetic, fictional)
+
+Name: Tomer Galil
+Email: tomer.fictional@example.com | Phone: 050-000-0002
+Applying for: Senior Unity Game Developer
+
+Experience:
+- Senior Game Developer, 11 yrs, Unity/C#, mobile F2P, shipped 6 titles.
+- No administrative or office-management experience.
+Languages: Hebrew, English.

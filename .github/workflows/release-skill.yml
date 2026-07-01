@@ -1,0 +1,50 @@
+name: Build & release skill
+
+# Rebuilds cv-triage.skill from the plugin's skill source on every push to main
+# and attaches it to a GitHub Release named after the version in plugin.json.
+# This keeps the downloadable skill always in sync with the plugin — no manual
+# building or release-cutting. Bump "version" in
+# plugins/cv-triage/.claude-plugin/plugin.json to create a new release.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Sanity-check the skill
+        run: |
+          python3 - <<'PY'
+          import re, pathlib
+          p = pathlib.Path("plugins/cv-triage/skills/cv-triage/SKILL.md").read_text()
+          m = re.match(r"^---\n(.*?)\n---", p, re.S)
+          assert m, "SKILL.md is missing YAML frontmatter"
+          fm = m.group(1)
+          assert re.search(r"^name:\s*\S+", fm, re.M), "frontmatter missing name"
+          assert re.search(r"^description:\s*\S+", fm, re.M), "frontmatter missing description"
+          print("SKILL.md frontmatter OK")
+          PY
+
+      - name: Build the .skill
+        run: ./build.sh
+
+      - name: Read plugin version
+        id: ver
+        run: |
+          echo "version=$(python3 -c "import json;print(json.load(open('plugins/cv-triage/.claude-plugin/plugin.json'))['version'])")" >> "$GITHUB_OUTPUT"
+
+      - name: Publish / refresh release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.ver.outputs.version }}
+          name: v${{ steps.ver.outputs.version }}
+          files: cv-triage.skill
+          fail_on_unmatched_files: true

@@ -1,0 +1,17 @@
+# Built skill artifact — distribute via GitHub Releases, not in the repo
+*.skill
+dist/
+
+# Eval run outputs / workspaces
+*-workspace/
+cv-triage/evals/**/outputs/
+
+# Python
+__pycache__/
+*.pyc
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
