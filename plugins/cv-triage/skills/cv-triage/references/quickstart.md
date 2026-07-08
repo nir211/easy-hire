@@ -7,7 +7,7 @@ A short setup guide. Once installed, just tell Claude something like *"go throug
 1. **Turn on file/code:** Settings → Capabilities → enable *Code execution and file creation*.
 2. **Connect Gmail:** Settings → Connectors.
 3. **Create an intake label** in Gmail (e.g. `job-applications`) with a filter that auto-applies it to applications — match the job inbox address, or subject keywords. The skill reads only this label.
-4. **Set up attachment access (important).** Gmail's connector can't read file attachments, so attached CVs need a folder the skill can see. Best: follow `gmail-to-drive-setup.md` to auto-save attachments to a Drive folder. Minimum: make a local `cvs/incoming/` folder and drop CVs in. Without this, candidates who only attached a CV are parked as **Blocked** until their file appears.
+4. **Set up attachment access (recommended).** In some setups Gmail's connector may not read file attachments, so attached CVs may need a folder the skill can see. Best: follow `gmail-to-drive-setup.md` to auto-save attachments to a Drive folder. Minimum: make a local `cvs/incoming/` folder and drop CVs in. In case a CV that was only attached can't be read, that candidate is parked as **Blocked** until the file appears.
 5. **(Recommended) Connect Claude in Chrome** so the skill can read *public* LinkedIn profiles when an application links to one instead of attaching a CV.
 
 ## First run

@@ -1,7 +1,7 @@
 {
   "name": "cv-triage",
   "description": "Triage job-application CVs from a Gmail label against a saved job description and criteria: decide Interview / Hold / Reject and track decisions in a local Excel file.",
-  "version": "1.0.0",
+  "version": "1.1.1",
   "author": { "name": "nir211" },
   "license": "MIT",
   "homepage": "https://github.com/nir211/easy-hire",

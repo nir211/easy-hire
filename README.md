@@ -8,7 +8,7 @@ An [Agent Skill](https://agentskills.io) for Claude that turns a recruiting inbo
 
 Works for **any role**: the job description and criteria are asked for on first run and saved, nothing is hardcoded.
 
-> **Heads-up on attachments (please read).** Claude's Gmail connector returns email *text* but **not file attachments**. CVs sent as PDF/DOCX attachments must reach the skill through a folder it can read. The repo includes a small, least-privilege Google Apps Script that auto-saves labeled attachments to a Drive folder — see [Attachment access](#attachment-access). Without it, attachment-only candidates are parked as *Blocked* until their file appears.
+> **Heads-up on attachments (please read).** Claude's Gmail connector returns email *text*, and in some setups **may not surface file attachments**. In case a CV attachment isn't directly readable, it can reach the skill through a folder it can read: the repo includes a small, least-privilege Google Apps Script that auto-saves labeled attachments to a Drive folder — see [Attachment access](#attachment-access). Without a fallback, an attachment-only candidate is parked as *Blocked* until their file appears.
 
 ---
 
@@ -21,6 +21,9 @@ On each run, the skill:
 3. Decides **Interview / Hold / Reject** with a one-line reason — or **Blocked** if the CV couldn't be read at all.
 4. Writes everything to a local `Candidates.xlsx` you can open outside Claude, backing it up before every write.
 5. Shows you a focused list to confirm or override, then remembers your decisions so they don't come back.
+
+**Also:** de-duplicates repeat and cross-board applicants, explains every decision (what matched, what's missing, confidence, and what would change it), spotlights standout candidates, and can run unattended as a scheduled Cowork task.
+
 
 Decisions are recommendations — you always have the final say, and nothing is ever sent to a candidate.
 
@@ -79,7 +82,7 @@ Then just say something like *"go through the new applications"* and it runs.
 
 ## Attachment access
 
-Because the Gmail connector can't read attachments, set up one of these as your **CV source**:
+In case the Gmail connector doesn't surface attachments in your setup, set up one of these as a fallback **CV source** for when a CV attachment isn't directly readable:
 
 - **Recommended — Gmail→Drive auto-save.** A ~40-line Google Apps Script copies attachments from your label into one Drive folder the skill reads. It requests only two **least-privilege** scopes: Gmail **read-only** and Drive **only-its-own-files** (`drive.file`). Full step-by-step, manifest, and script: [`plugins/cv-triage/skills/cv-triage/references/gmail-to-drive-setup.md`](plugins/cv-triage/skills/cv-triage/references/gmail-to-drive-setup.md).
 - **Minimum — local drop folder.** Make a `cvs/incoming/` folder and drop CVs in. No permissions, but manual.

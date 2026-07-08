@@ -1,27 +1,66 @@
 {
   "skill_name": "cv-triage",
-  "note": "Synthetic readable CVs to test decision calibration (not retrieval). Run each in Cowork with the skill installed, using job-description.txt as the JD and the must/nice/deal-breaker lines as criteria.",
+  "note": "Synthetic readable CVs to test decision calibration, explanation quality, standout detection, and dedup (not retrieval). Run each in Cowork with the skill installed, using job-description.txt as the JD and its must/nice/deal-breaker lines as criteria.",
   "evals": [
     {
       "id": 1,
       "name": "clear-interview",
       "prompt": "Using fixtures/job-description.txt as the role, evaluate fixtures/01_clear_interview.txt and give a decision with a one-line reason.",
       "expected_output": "Interview. All must-haves clearly met: 5+ yrs office management, Hebrew+English, high-tech office ownership, ERP tools.",
-      "files": ["fixtures/job-description.txt", "fixtures/01_clear_interview.txt"]
+      "files": [
+        "fixtures/job-description.txt",
+        "fixtures/01_clear_interview.txt"
+      ]
     },
     {
       "id": 2,
       "name": "clear-reject-offrole",
       "prompt": "Using fixtures/job-description.txt as the role, evaluate fixtures/02_clear_reject_offrole.txt and give a decision with a one-line reason.",
       "expected_output": "Reject. Off-role: applied as a game developer with no admin/office-management experience.",
-      "files": ["fixtures/job-description.txt", "fixtures/02_clear_reject_offrole.txt"]
+      "files": [
+        "fixtures/job-description.txt",
+        "fixtures/02_clear_reject_offrole.txt"
+      ]
     },
     {
       "id": 3,
       "name": "genuine-borderline",
       "prompt": "Using fixtures/job-description.txt as the role, evaluate fixtures/03_borderline_hold.txt and give a decision with a one-line reason.",
       "expected_output": "Hold. ~1.5 yrs (below the 2-yr floor), basic English, no high-tech/ERP — genuine borderline, should not be auto-rejected or auto-interviewed.",
-      "files": ["fixtures/job-description.txt", "fixtures/03_borderline_hold.txt"]
+      "files": [
+        "fixtures/job-description.txt",
+        "fixtures/03_borderline_hold.txt"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "standout-detection",
+      "prompt": "Using fixtures/job-description.txt, evaluate fixtures/04_standout.txt. Give the decision, an explained reason (matched / missing / confidence / what-would-change-it), and say whether this is a Standout.",
+      "expected_output": "Interview, Confidence High, Standout = Yes. Exceeds the bar: 7 yrs senior office/ops experience, scaled an office 15->120, owns Priority ERP and a budget and a team. Explanation names the matched must-haves; nothing material missing.",
+      "files": [
+        "fixtures/job-description.txt",
+        "fixtures/04_standout.txt"
+      ]
+    },
+    {
+      "id": 5,
+      "name": "dedup-cross-source",
+      "prompt": "The tracker already contains Noa Berkovich (fixtures/01_clear_interview.txt) as Interview. Now process fixtures/05_duplicate_of_01.txt, which is the same person applying via LinkedIn. What should happen?",
+      "expected_output": "Recognized as a duplicate of Noa Berkovich (same email/name/phone). Do NOT create a second decision row or double-count; keep the existing Interview, note 'duplicate of Noa Berkovich (already Interview, LinkedIn)', and list under Duplicates in the digest.",
+      "files": [
+        "fixtures/05_duplicate_of_01.txt",
+        "fixtures/01_clear_interview.txt"
+      ]
+    },
+    {
+      "id": 6,
+      "name": "explanation-quality-borderline",
+      "prompt": "Using fixtures/job-description.txt, evaluate fixtures/03_borderline_hold.txt. The reason must include what matched, what's missing, a Confidence level, and the single thing that would change the decision.",
+      "expected_output": "Hold, Confidence Medium/Low. Matched: some admin/reception experience. Missing: ~1.5 yrs (under the 2-yr floor), basic English, no high-tech/ERP. Would-change-it: moves to Interview if 2+ yrs relevant experience and professional English are confirmed.",
+      "files": [
+        "fixtures/job-description.txt",
+        "fixtures/03_borderline_hold.txt"
+      ]
     }
   ]
 }

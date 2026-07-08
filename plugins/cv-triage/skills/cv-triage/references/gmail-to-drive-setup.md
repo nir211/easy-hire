@@ -1,6 +1,6 @@
 # Getting attached CVs where the skill can read them
 
-The Gmail connector returns email text but **not file attachments**. So a CV sent as a PDF/DOCX attachment can't be read from the email itself — it has to arrive in a **CV source folder** the skill checks. Two options.
+The Gmail connector returns email text, and in some setups **may not surface file attachments**. In case a CV attachment isn't readable directly from the email, it can arrive in a **CV source folder** the skill checks. Two options.
 
 ## Option A — Gmail → Drive auto-save (recommended; least-privilege version)
 

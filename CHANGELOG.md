@@ -3,6 +3,24 @@
 All notable changes to this project are documented here. Format loosely follows
 [Keep a Changelog](https://keepachangelog.com/); this project uses semantic-ish versioning.
 
+## [1.1.1]
+
+- **Fixed `update.sh`** — it used to `git init` + `git pull` in a fresh folder, creating an "unrelated histories" merge conflict on push. It now auto-detects mode: **REUSE** (inside a clone → commit, rebase, push) or **CLONE** (standalone folder → clone the remote, overlay files, push, and adopt the clone's `.git`). It refuses to run mid-rebase and never force-pushes.
+- **Added `test/test_update.sh`** — hermetic tests (local `file://` remotes, no network) covering the REUSE push, the standalone-no-conflict case, and the mid-rebase refusal. Written test-first to reproduce the bug, then fixed.
+- Documented the update/release flow and the repo scripts in `CLAUDE.md`.
+
+## [1.1.0]
+
+Adds recruiter-facing value and unattended operation.
+
+- **De-duplication** across repeat and cross-source applicants (same person via multiple boards), matched on message ID + normalized email/name/phone; updated CVs re-evaluate in place instead of duplicating.
+- **Explained decisions**: every call states what matched, what's missing, a Confidence level, and the one thing that would change it.
+- **Standout spotlight**: exceptional candidates flagged and surfaced first in the digest; near-misses and watch-outs called out; Interview ranked best-first.
+- **Funnel + source tracking**: new `Source`, `Confidence`, and `Standout?` columns; run summary reports the source breakdown (including where standouts come from).
+- **Loops & scheduling**: idempotent by design; documented unattended/scheduled Cowork mode (triage + digest, never blocks on input, never acts irreversibly).
+- Added `CLAUDE.md` engineering knowledgebase; extended evals with standout, dedup, and explanation-quality cases.
+- **Softened attachment language** to conditional ("may", "in case") across SKILL.md, README, quickstart, and the Gmail→Drive guide: the skill now tries the attachment first and only falls back to the CV-source folder when it isn't available, so the docs hold whether or not the connector surfaces attachments.
+
 ## [1.0.0] — Initial public release
 
 First public version. Hardened against findings from a live end-to-end evaluation:
