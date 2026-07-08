@@ -7,6 +7,8 @@ description: Screen and triage incoming job applications from the user's Gmail a
 
 Turn a recruiting inbox into a ranked, decided, persistent shortlist. Each run pulls new applicant emails, gathers each candidate's CV, compares it to a saved job description plus targeting criteria, decides **Interview / Hold / Reject** with an explained reason, de-duplicates repeat applicants, spotlights the standouts, and writes everything to one local Excel file so decisions survive between runs. The role is not hardcoded — the job description and criteria are asked for on first use and saved, so this works for any role. It is idempotent and safe to run repeatedly, in a loop, or on a schedule.
 
+_This tool provides recommendations for a human to review; the user makes every hiring decision and is responsible for compliance with applicable law. Provided as-is, without warranty._
+
 ## Important environment reality (read first)
 
 The Gmail connector reliably returns the email **body** (inline HTML, cover-letter text, job-board text). In some setups it **may not surface file attachments**, and it sometimes returns a **garbled Subject header** (mojibake). Design for both cases:
@@ -25,7 +27,11 @@ The Gmail connector reliably returns the email **body** (inline HTML, cover-lett
 
 1. Ask which **working folder** to use (everything lives here). Then look in it for `config.md`.
 2. If `config.md` is missing, ask for: **Gmail label**; **cutoff date** (only consider emails on/after it); **reply language** (e.g. Hebrew/English); **CV source** (the Drive folder or local path where saved attachments land); and **fairness filter on/off** — default off. Off = evaluate on whatever the CV contains. On = ignore age, gender, photo, marital/family status, religion, ethnicity, address, military unit, and health, and don't infer them. Save answers to `config.md`; confirm. If `config.md` exists, load it silently.
-3. Look for `jd.md` and `criteria.md` in the folder. If missing, ask the user to paste the **job description**, then ask for **targeting criteria**, offering the structure in `references/criteria-template.md`. Save as `jd.md` / `criteria.md`. If they exist, load them and say you're using the saved versions. The user can say "update the JD/criteria" any time. **Before saving criteria, run the fairness check below.**
+3. **Job description and targeting criteria — collect these as two separate, explicit asks. Do not merge them into one question, and do not ask only for a job _title_.** Look for `jd.md` and `criteria.md` in the folder.
+   - If `jd.md` is missing, ask the user to **paste the full job description text**, making clear that a long paste is exactly what's wanted — for example, say: _"Paste the full job description here — the entire text is fine, not just the title — and I'll save it."_ Save the pasted text verbatim as `jd.md`. If the user gives only a short role name, ask again for the full JD (or, if they have no written JD, offer to proceed using the criteria alone).
+   - Then, as a **separate** follow-up question, ask for the **targeting criteria** — must-haves, nice-to-haves, and deal-breakers — offering the structure in `references/criteria-template.md`. For example: _"Now the targeting criteria: what are the must-haves, the nice-to-haves, and the deal-breakers? You can free-type, or I can give you a short template."_ Save as `criteria.md`.
+   - If they already exist, load them and say you're using the saved versions. The user can say "update the JD/criteria" any time.
+   - **Before saving criteria, run the fairness check below.**
 
 ### Fairness check on criteria (always run when criteria are set or updated)
 Scan the criteria for any preference keyed on a **protected attribute** (gender, age, marital/family status, religion, ethnicity, nationality, disability, etc.) — e.g. "prefer women." If found:
@@ -90,6 +96,7 @@ The skill is **idempotent** — the message-ID key and dedup mean a repeat run p
 
 - **Loop / batch mode.** For a large backlog, process in chunks and keep going; the tracker makes it resumable if interrupted. Re-running immediately with nothing new makes no changes and reports "Nothing new."
 - **Unattended / scheduled mode.** When running without a human present (a scheduled task), do **not** block on overrides in step 11. Instead: triage, write the recommended decisions, keep everything reversible (all Rejects remain recommendations the user can flip later), and leave a **digest** — standouts first, then counts and anything needing attention. The user reviews and overrides next time they open it. Never take an irreversible action unattended (no contacting candidates, no mailbox changes).
+- **Scheduling it in Claude Code.** Use the built-in, in-session `/loop` scheduler (e.g. `/loop 1d run cv-triage ...`), which re-runs while the session is open and stops when it closes — the recommended, human-present path. See `references/running-in-claude-code.md`. (Unattended OS-cron/headless scheduling is intentionally not documented here.)
 - **Scheduling it in Cowork.** Cowork can run this as a recurring task. Suggest a recurring prompt such as: *"Every weekday at 9:00, run cv-triage on my applications: process new candidates, update the tracker, and give me a digest with the standouts and anything that needs my decision."* The user confirms the schedule in Cowork's scheduling UI; each run appends to the same tracker in the working folder.
 
 ## Tracker schema

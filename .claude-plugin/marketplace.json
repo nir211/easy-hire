@@ -7,7 +7,7 @@
       "name": "cv-triage",
       "source": "./plugins/cv-triage",
       "description": "Triage job-application CVs from Gmail into Interview / Hold / Reject, tracked in a local Excel file.",
-      "version": "1.1.1",
+      "version": "1.1.3",
       "license": "MIT",
       "category": "productivity",
       "keywords": ["recruiting", "cv", "resume", "screening", "gmail", "hiring", "ats"]

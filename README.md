@@ -67,6 +67,8 @@ The skill then activates on its own when you ask Claude to go through applicatio
 
 Copy the skill folder `plugins/cv-triage/skills/cv-triage/` into your agent's skills directory. For Claude Code that's `~/.claude/skills/cv-triage/`. The skill follows the open [Agent Skills](https://agentskills.io) standard, so it also works in other compatible agents that read a `SKILL.md`-based skills folder.
 
+Running in **Claude Code** (MCP connectors + the safe in-session `/loop` scheduler) is documented in [`running-in-claude-code.md`](plugins/cv-triage/skills/cv-triage/references/running-in-claude-code.md).
+
 > Make sure **Code execution and file creation** is enabled (Settings → Capabilities) — the tracker and backup script need it.
 
 
@@ -126,6 +128,10 @@ build.sh                                 # builds cv-triage.skill for upload
 This is a **decision-support tool, not an automated recruiter, and not legal advice.** It surfaces recommendations for a human to review — you make the hiring decisions and you are responsible for compliance with the employment and anti-discrimination laws that apply to you.
 
 By design it scores only on job-relevant evidence. An optional **fairness filter** makes it ignore protected attributes (age, gender, photo, marital/family status, religion, ethnicity, address, etc.). If your criteria include a preference on a protected attribute, the skill warns you, asks you to confirm, and applies it only as a logged tie-breaker — never as a gate. Whether to use such a preference is your decision and your legal responsibility.
+
+## Disclaimer (as-is)
+
+**easy-hire is provided "as is", without warranty of any kind.** Use it, fork it, build on it — just know the calls are yours: it produces *recommendations* for a human to review, you make every hiring decision, and you are responsible for reviewing each one and for complying with the laws that apply to you (employment, anti-discrimination, privacy). It is not legal advice, and to the maximum extent permitted by law the authors and contributors accept no liability for any outcome arising from its use. Full terms: [LICENSE](LICENSE) and [DISCLAIMER.md](DISCLAIMER.md).
 
 ## Testing
 

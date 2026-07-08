@@ -33,10 +33,10 @@ plugins/cv-triage/
   .claude-plugin/plugin.json             plugin manifest (holds the version)
   skills/cv-triage/
     SKILL.md                             the skill (workflow, rules, schema)
-    references/                          quickstart, criteria-template, gmail-to-drive-setup
+    references/                          quickstart, criteria-template, gmail-to-drive-setup, running-in-claude-code
     scripts/backup_tracker.py            deterministic pre-write backup
     evals/                               synthetic fixtures + evals.json (excluded from .skill)
-build.sh · README.md · CLAUDE.md · CHANGELOG.md · LICENSE · push.sh · .github/
+build.sh · README.md · CLAUDE.md · CHANGELOG.md · LICENSE · DISCLAIMER.md · push.sh · update.sh · test/ · .github/
 ```
 
 ## Symbols
@@ -67,6 +67,8 @@ build.sh · README.md · CLAUDE.md · CHANGELOG.md · LICENSE · push.sh · .git
 - Fixtures/examples must be synthetic and clearly fictional — no real candidate data.
 - Bump `version` in **both** `plugin.json` and `marketplace.json` together; that is what cuts a new release.
 - Python: stdlib-only, type-hinted, docstringed, no new lint errors.
+- Scheduling stance: document only the **in-session `/loop`** path for Claude Code; do not document unattended headless/cron (safety).
+- Keep the as-is disclaimer visible (DISCLAIMER.md, README, quickstart, SKILL.md); code should stay well-commented (full coverage).
 
 ## Definition of Done
 

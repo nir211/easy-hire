@@ -1,5 +1,7 @@
 # Quickstart (for the person running this skill)
 
+> _Provided as-is, no warranty. It recommends; you decide and own every hiring call. See DISCLAIMER._
+
 A short setup guide. Once installed, just tell Claude something like *"go through the new applications"* or *"triage today's CVs"* and it runs.
 
 ## One-time setup

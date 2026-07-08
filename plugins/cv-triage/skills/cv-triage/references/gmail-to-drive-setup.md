@@ -49,59 +49,92 @@ There is no Google scope for "one label only" (read-only is the floor) or "one n
 ### Script (`Code.gs`)
 
 ```javascript
-// Saves attachments from a Gmail label into one Drive folder.
-// Permissions: gmail.readonly + drive.file only.
-// No Gmail writes: processed messages are remembered in Script Properties.
+/**
+ * saveApplicationAttachmentsToDrive
+ * ---------------------------------
+ * Copies CV attachments from one Gmail label into one Drive folder, so the
+ * cv-triage skill (which reads Drive, not Gmail attachments) can see them.
+ *
+ * Permissions requested: gmail.readonly + drive.file ONLY.
+ *   gmail.readonly : read mail; it can never modify, label, or delete it.
+ *   drive.file     : the script can only ever touch files/folders IT creates.
+ * Because it never writes to Gmail, it can't use a Gmail label to remember what
+ * it already processed. Instead it records handled message IDs in the script's
+ * own private storage (PropertiesService).
+ */
 
-var LABEL = 'job-applications';            // your intake label
-var FOLDER_NAME = 'Application CVs';  // Drive folder this app creates and owns
+// ---- Settings: change these two to match your setup -------------------------
+var LABEL = 'job-applications';       // the Gmail label your applications carry
+var FOLDER_NAME = 'Application CVs';  // the Drive folder this script creates & owns
 
 function saveApplicationAttachmentsToDrive() {
+  // Private per-script key/value storage. We keep two things here:
+  //   folderId   - the Drive folder we created (reuse it; never search Drive)
+  //   seenMsgIds - message IDs already saved (so we never copy the same one twice)
   var props = PropertiesService.getScriptProperties();
   var folderId = getOrCreateFolderId_(props);
 
+  // Load the "already processed" list into an object for fast lookups.
   var seen = JSON.parse(props.getProperty('seenMsgIds') || '[]');
   var seenSet = {};
   for (var i = 0; i < seen.length; i++) seenSet[seen[i]] = true;
 
-  var label = GmailApp.getUserLabelByName(LABEL);  // read-only
+  // Find the label (read-only). Bail out clearly if the name is wrong.
+  var label = GmailApp.getUserLabelByName(LABEL);
   if (!label) { Logger.log('Label not found: ' + LABEL); return; }
 
-  var threads = label.getThreads(0, 100);          // 100 most recent threads
+  // Walk the 100 most recent threads under the label.
+  var threads = label.getThreads(0, 100);
   for (var t = 0; t < threads.length; t++) {
     var msgs = threads[t].getMessages();
     for (var m = 0; m < msgs.length; m++) {
       var msg = msgs[m];
       var id = msg.getId();
-      if (seenSet[id]) continue;                    // already handled
+      if (seenSet[id]) continue;                     // skip messages already saved
+
+      // Prefix the saved filename with the sender, so the skill can match a CV
+      // to the right candidate. Strip characters unsafe in filenames.
       var from = msg.getFrom().replace(/[^\w.@-]/g, '_');
+
+      // Save only document/image attachments (skip inline logos, signatures...).
       var atts = msg.getAttachments();
       for (var a = 0; a < atts.length; a++) {
         var ct = atts[a].getContentType() || '';
         if (ct.indexOf('pdf') > -1 || ct.indexOf('word') > -1 ||
             ct.indexOf('officedocument') > -1 || ct.indexOf('image') > -1) {
+          // drive.file lets us create files inside a folder we own.
           Drive.Files.create(
             { name: from + '__' + atts[a].getName(), parents: [folderId] },
             atts[a].copyBlob()
           );
         }
       }
+
+      // Mark this message handled so future runs skip it.
       seen.push(id);
       seenSet[id] = true;
     }
   }
-  // keep the most recent ~400 ids (Script Properties value limit is 9KB)
+
+  // Persist the handled set, keeping only the most recent ~400 IDs: a single
+  // Script Properties value is capped at 9KB, and older mail won't reappear in
+  // the 100-thread window anyway.
   props.setProperty('seenMsgIds', JSON.stringify(seen.slice(-400)));
 }
 
+/**
+ * Returns our Drive folder's ID, creating it on first run and remembering it.
+ * We store the ID rather than searching Drive by name, because the drive.file
+ * scope only lets us see files this script created (it can't browse your Drive).
+ */
 function getOrCreateFolderId_(props) {
   var id = props.getProperty('folderId');
-  if (id) return id;
+  if (id) return id;                          // reuse the folder we made before
   var folder = Drive.Files.create({
     name: FOLDER_NAME,
     mimeType: 'application/vnd.google-apps.folder'
   });
-  props.setProperty('folderId', folder.id);
+  props.setProperty('folderId', folder.id);   // remember it for next time
   return folder.id;
 }
 ```

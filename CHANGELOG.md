@@ -3,6 +3,16 @@
 All notable changes to this project are documented here. Format loosely follows
 [Keep a Changelog](https://keepachangelog.com/); this project uses semantic-ish versioning.
 
+## [1.1.3]
+
+- **Clearer first-run setup.** The setup step now collects the job description and the targeting criteria as two separate, explicit asks, and tells the user to **paste the full JD text** (not just a role title). Fixes real Cowork feedback where the agent asked only for "the role you're hiring for" and bundled the criteria in, so it wasn't clear the full JD could be pasted or that criteria were a distinct input. Added example prompt wording for the agent to use.
+
+## [1.1.2]
+
+- **Documented running in Claude Code** via `references/running-in-claude-code.md` — MCP connectors plus the built-in **in-session `/loop`** scheduler. Unattended headless/OS-cron scheduling is intentionally not documented, to keep the agent human-present when reading a mailbox.
+- **Added an as-is disclaimer** (`DISCLAIMER.md`) and surfaced it in `README.md`, `quickstart.md`, and `SKILL.md`: recommendations only, the human decides, no warranty, no liability, user owns compliance.
+- **Expanded code comments** across the Gmail→Drive Apps Script (per-step explanations of scopes, dedup, and folder reuse).
+
 ## [1.1.1]
 
 - **Fixed `update.sh`** — it used to `git init` + `git pull` in a fresh folder, creating an "unrelated histories" merge conflict on push. It now auto-detects mode: **REUSE** (inside a clone → commit, rebase, push) or **CLONE** (standalone folder → clone the remote, overlay files, push, and adopt the clone's `.git`). It refuses to run mid-rebase and never force-pushes.
